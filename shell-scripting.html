@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Master Bash Shell Scripting and Linux automation. A-STACK interactive guides and command cheat sheets for administrators.">
+  <title>A-STACK Shell Scripting Masterclass Docs</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans for headings, Inter for body copy, Fira Code for code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* -------------------------------------------------------------
+       1. CSS Variables & Theme Definition
+       ------------------------------------------------------------- */
+    :root {
+      /* Transitions */
+      --transition-speed: 0.3s;
+      --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Shared styles */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --border-radius-lg: 20px;
+    }
+
+    /* Dark Theme (Default) */
+    html[data-theme="dark"] {
+      --bg-primary: #090d16;
+      --bg-secondary: #101626;
+      --bg-tertiary: #192138;
+      --border-color: #202b48;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-color: #0052ff;
+      --accent-hover: #1e6aff;
+      --accent-light: rgba(0, 82, 255, 0.15);
+      --accent-border: #0040cc;
+      --terminal-bg: #050810;
+      --terminal-header: #121829;
+      --alert-note-bg: rgba(59, 130, 246, 0.1);
+      --alert-note-border: #3b82f6;
+      --alert-tip-bg: rgba(16, 185, 129, 0.1);
+      --alert-tip-border: #10b981;
+      --alert-warn-bg: rgba(245, 158, 11, 0.1);
+      --alert-warn-border: #f59e0b;
+      --scrollbar-thumb: #202b48;
+      --scrollbar-track: #090d16;
+      --card-gradient: linear-gradient(135deg, #101626 0%, #172036 100%);
+      --gradient-brand: linear-gradient(135deg, #0052ff 0%, #00d2ff 100%);
+    }
+
+    /* Light Theme */
+    html[data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --border-color: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent-color: #0052ff;
+      --accent-hover: #0041cc;
+      --accent-light: rgba(0, 82, 255, 0.08);
+      --accent-border: #cbd5e1;
+      --terminal-bg: #0f172a;
+      --terminal-header: #1e293b;
+      --alert-note-bg: #eff6ff;
+      --alert-note-border: #3b82f6;
+      --alert-tip-bg: #ecfdf5;
+      --alert-tip-border: #10b981;
+      --alert-warn-bg: #fffbeb;
+      --alert-warn-border: #f59e0b;
+      --scrollbar-thumb: #cbd5e1;
+      --scrollbar-track: #f1f5f9;
+      --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      --gradient-brand: linear-gradient(135deg, #0052ff 0%, #0088ff 100%);
+    }
+
+    /* -------------------------------------------------------------
+       2. Reset & Layout Setup
+       ------------------------------------------------------------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      transition: background-color var(--transition-speed) var(--transition-ease),
+                  color var(--transition-speed) var(--transition-ease);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-color);
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* -------------------------------------------------------------
+       3. Structural Layout Grid
+       ------------------------------------------------------------- */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+      transition: background-color var(--transition-speed) var(--transition-ease),
+                  border-color var(--transition-speed) var(--transition-ease);
+    }
+
+    .app-container {
+      display: flex;
+      min-height: calc(100vh - 70px);
+      margin-top: 70px;
+    }
+
+    /* Left Sidebar */
+    .sidebar-left {
+      width: 280px;
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      position: fixed;
+      top: 70px;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      padding: 24px 16px;
+      z-index: 900;
+      transition: transform var(--transition-speed) var(--transition-ease),
+                  background-color var(--transition-speed) var(--transition-ease),
+                  border-color var(--transition-speed) var(--transition-ease);
+    }
+
+    /* Right Sidebar (Table of Contents) */
+    .sidebar-right {
+      width: 280px;
+      background-color: var(--bg-primary);
+      border-left: 1px solid transparent;
+      position: fixed;
+      top: 70px;
+      bottom: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 40px 24px;
+      z-index: 800;
+      transition: transform var(--transition-speed) var(--transition-ease);
+    }
+
+    /* Reading Panel (Center Content) */
+    .content-panel {
+      flex: 1;
+      margin-left: 280px;
+      margin-right: 280px;
+      padding: 40px 56px 80px 56px;
+      max-width: 960px;
+      min-height: 100%;
+      transition: margin var(--transition-speed) var(--transition-ease);
+    }
+
+    /* -------------------------------------------------------------
+       4. Header Elements (Logo, Search, Social, Theme Toggle)
+       ------------------------------------------------------------- */
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: var(--border-radius-sm);
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .logo-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-svg {
+      height: 48px;
+      width: auto;
+      color: var(--text-primary);
+    }
+
+    .header-center {
+      flex: 1;
+      max-width: 420px;
+      margin: 0 24px;
+      position: relative;
+    }
+
+    .search-trigger {
+      width: 100%;
+      height: 38px;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 14px;
+      transition: border-color var(--transition-speed);
+    }
+    .search-trigger:hover {
+      border-color: var(--accent-color);
+    }
+    .search-trigger-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-kbd {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: inherit;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-right: 1px solid var(--border-color);
+      padding-right: 16px;
+    }
+
+    .social-icon-btn {
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      transition: color 0.2s, background-color 0.2s;
+    }
+    .social-icon-btn:hover {
+      color: var(--accent-color);
+      background-color: var(--accent-light);
+    }
+
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, background-color 0.2s;
+    }
+    .theme-toggle-btn:hover {
+      color: var(--accent-color);
+      background-color: var(--accent-light);
+    }
+
+    .icon-svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* -------------------------------------------------------------
+       5. Sidebar Left Navigation
+       ------------------------------------------------------------- */
+    .sidebar-section-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-item {
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: var(--text-secondary);
+      border-radius: var(--border-radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .sidebar-link:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-tertiary);
+    }
+    .sidebar-link.active {
+      color: var(--accent-color);
+      background-color: var(--accent-light);
+      border-left-color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    /* -------------------------------------------------------------
+       6. Right Sidebar (TOC Scroll-spy)
+       ------------------------------------------------------------- */
+    .toc-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .toc-list {
+      list-style: none;
+      border-left: 1px solid var(--border-color);
+      padding-left: 2px;
+    }
+
+    .toc-item {
+      margin-bottom: 8px;
+    }
+
+    .toc-link {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 3px 0 3px 14px;
+      border-left: 2px solid transparent;
+      margin-left: -2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.15s ease;
+    }
+    .toc-link:hover {
+      color: var(--text-primary);
+    }
+    .toc-link.active {
+      color: var(--accent-color);
+      border-left-color: var(--accent-color);
+      font-weight: 600;
+    }
+    .toc-link.indent-3 {
+      padding-left: 24px;
+      font-size: 12.5px;
+    }
+
+    /* -------------------------------------------------------------
+       7. Documentation Typography & Page Content
+       ------------------------------------------------------------- */
+    .page-section {
+      display: none;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .doc-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .doc-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .doc-section {
+      margin-top: 40px;
+    }
+
+    .doc-h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 18px;
+      margin-top: 36px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    .doc-h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      margin-top: 28px;
+      color: var(--text-primary);
+    }
+
+    .doc-p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .doc-ul, .doc-ol {
+      margin-left: 24px;
+      margin-bottom: 24px;
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .doc-li {
+      margin-bottom: 8px;
+    }
+
+    .doc-bold {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* -------------------------------------------------------------
+       8. Custom Code Blocks & Terminals
+       ------------------------------------------------------------- */
+    .terminal-block {
+      background-color: var(--terminal-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      margin: 24px 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .terminal-header {
+      background-color: var(--terminal-header);
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .terminal-dot.red { background-color: #ef4444; }
+    .terminal-dot.yellow { background-color: #f59e0b; }
+    .terminal-dot.green { background-color: #10b981; }
+
+    .terminal-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      font-family: inherit;
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.03);
+      color: #94a3b8;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      color: #fff;
+      border-color: #3b82f6;
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+    .copy-btn.copied {
+      color: #10b981;
+      border-color: #10b981;
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .terminal-body {
+      padding: 16px 20px;
+      overflow-x: auto;
+    }
+    .terminal-body pre {
+      font-family: 'Fira Code', 'Courier New', Courier, monospace;
+      font-size: 14px;
+      color: #e2e8f0;
+      margin: 0;
+    }
+    .terminal-body code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      border: none;
+    }
+
+    .cmd-keyword { color: #f43f5e; font-weight: 500; }
+    .cmd-flag { color: #38bdf8; }
+    .cmd-arg { color: #34d399; }
+    .cmd-comment { color: #64748b; font-style: italic; }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 13.5px;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--accent-color);
+      transition: background var(--transition-speed);
+    }
+
+    /* -------------------------------------------------------------
+       9. Callouts & Alert Boxes (GitHub Alerts)
+       ------------------------------------------------------------- */
+    .callout {
+      border-left: 4px solid;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      padding: 16px 20px;
+      margin: 28px 0;
+      font-size: 14.5px;
+    }
+    .callout-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout.note {
+      background-color: var(--alert-note-bg);
+      border-left-color: var(--alert-note-border);
+      color: var(--text-primary);
+    }
+    .callout.note .callout-title {
+      color: var(--alert-note-border);
+    }
+
+    .callout.tip {
+      background-color: var(--alert-tip-bg);
+      border-left-color: var(--alert-tip-border);
+      color: var(--text-primary);
+    }
+    .callout.tip .callout-title {
+      color: var(--alert-tip-border);
+    }
+
+    .callout.warning {
+      background-color: var(--alert-warn-bg);
+      border-left-color: var(--alert-warn-border);
+      color: var(--text-primary);
+    }
+    .callout.warning .callout-title {
+      color: var(--alert-warn-border);
+    }
+
+    /* -------------------------------------------------------------
+       10. Responsive SVG Flowcharts & Vector Graphics
+       ------------------------------------------------------------- */
+    .diagram-container {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin: 28px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    }
+
+    .diagram-svg {
+      width: 100%;
+      max-width: 680px;
+      height: auto;
+    }
+
+    .diagram-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+
+    .diag-node {
+      fill: var(--bg-tertiary);
+      stroke: var(--border-color);
+      stroke-width: 1.5;
+      transition: fill 0.3s, stroke 0.3s;
+    }
+    .diag-node.accent {
+      fill: var(--accent-light);
+      stroke: var(--accent-color);
+      stroke-width: 2;
+    }
+    .diag-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      fill: var(--text-primary);
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .diag-arrow {
+      stroke: var(--text-muted);
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    /* -------------------------------------------------------------
+       11. Welcome Page Layout & Brand Cards
+       ------------------------------------------------------------- */
+    .welcome-hero {
+      background: var(--card-gradient);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-lg);
+      padding: 48px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .welcome-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-brand);
+    }
+
+    .welcome-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .welcome-logo svg {
+      width: 320px;
+      height: auto;
+    }
+
+    .welcome-social-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .welcome-card-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .welcome-card-link:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .welcome-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 36px;
+    }
+
+    .welcome-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .welcome-card:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-3px);
+    }
+
+    .welcome-card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .welcome-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .welcome-card-p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* -------------------------------------------------------------
+       12. Bottom Navigation Pane (Prev/Next)
+       ------------------------------------------------------------- */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border-color);
+      gap: 16px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      max-width: 320px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .nav-btn.prev {
+      align-items: flex-start;
+      text-align: left;
+    }
+    .nav-btn.next {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .nav-btn-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .nav-btn-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    /* -------------------------------------------------------------
+       13. Interactive Command Cheat Sheet Layout
+       ------------------------------------------------------------- */
+    .cheat-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 16px;
+    }
+
+    .cheat-search-wrapper {
+      position: relative;
+    }
+    .cheat-search-input {
+      width: 100%;
+      height: 42px;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      color: var(--text-primary);
+      padding: 0 16px 0 40px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    .cheat-search-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+    .cheat-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .cheat-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cheat-filter-btn {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .cheat-filter-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+    .cheat-filter-btn.active {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .cheat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .cheat-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .cheat-card:hover {
+      border-color: var(--accent-color);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .cheat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .cheat-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+    }
+
+    .cheat-cmd-box {
+      background-color: var(--terminal-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .cheat-cmd-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      overflow-x: auto;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+
+    .cheat-card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* -------------------------------------------------------------
+       14. Search Modal Overlay (fuzzy search)
+       ------------------------------------------------------------- */
+    .search-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(9, 13, 22, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 80px 20px;
+    }
+    .search-modal.active {
+      display: flex;
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      animation: modalSlide 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .search-box-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .search-box-input {
+      flex: 1;
+      height: 36px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+    .search-box-input:focus {
+      outline: none;
+    }
+
+    .search-close-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .search-close-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    .search-results {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .search-result-item {
+      padding: 12px 16px;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: background-color 0.15s;
+    }
+    .search-result-item:hover {
+      background-color: var(--bg-tertiary);
+    }
+    .search-result-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-result-title .badge {
+      font-size: 10px;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: sans-serif;
+    }
+    .search-result-excerpt {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .search-empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* -------------------------------------------------------------
+       15. Responsive Media Queries
+       ------------------------------------------------------------- */
+    @media (max-width: 1200px) {
+      .sidebar-right {
+        display: none;
+      }
+      .content-panel {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .menu-toggle-btn {
+        display: block;
+      }
+      .sidebar-left {
+        transform: translateX(-100%);
+      }
+      .sidebar-left.active {
+        transform: translateX(0);
+      }
+      .content-panel {
+        margin-left: 0;
+        padding: 30px 24px 60px 24px;
+      }
+      .header-center {
+        display: none;
+      }
+      .social-links {
+        border-right: none;
+        padding-right: 0;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       16. Table Styling
+       ------------------------------------------------------------- */
+    .doc-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+      color: var(--text-secondary);
+      background-color: var(--bg-secondary);
+    }
+    .doc-table th, .doc-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .doc-table th {
+      background-color: var(--terminal-header);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+    .doc-table tr:last-child td {
+      border-bottom: none;
+    }
+    .doc-table tr:hover {
+      background-color: var(--bg-tertiary);
+    }
+  </style>
+</head>
+<body data-theme-inited="false">
+
+  <!-- -------------------------------------------------------------
+       HEADER BAR
+       ------------------------------------------------------------- -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="menu-toggle-btn" id="menuToggleBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="logo-wrapper">
+        <svg viewBox="0 0 320 80" class="logo-svg">
+          <g transform="translate(10, 5)">
+            <path d="M 10 70 L 45 10 L 60 10 L 25 70 Z" fill="#0052FF" />
+            <path class="logo-text-fill" d="M 45 10 L 80 70 L 65 70 L 55 50 L 35 50 L 38 40 L 60 40 L 48 18 Z" fill="#ffffff" />
+          </g>
+          <line x1="110" y1="12" x2="110" y2="68" stroke="currentColor" stroke-width="1.5" opacity="0.15" />
+          <text x="125" y="44" font-family="'Plus Jakarta Sans', sans-serif" font-size="28" font-weight="800" class="logo-text-fill" fill="#ffffff">A-STACK</text>
+          <text x="125" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" letter-spacing="3.5" fill="#0052FF">LEARN • BUILD • GROW</text>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="header-center">
+      <div class="search-trigger" onclick="openSearchModal()">
+        <div class="search-trigger-left">
+          <svg class="icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Search documentation...</span>
+        </div>
+        <span class="search-kbd">Ctrl K</span>
+      </div>
+    </div>
+    
+    <div class="header-right">
+      <div class="social-links">
+        <a href="https://linkedin.com/in/amoghdesh" target="_blank" class="social-icon-btn" title="LinkedIn">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="https://github.com/pandeji005" target="_blank" class="social-icon-btn" title="GitHub">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+      
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <svg class="icon-svg icon-moon" viewBox="0 0 24 24"><path d="M12 3c.132 0 .263 0 .393.007a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 2.999z"/></svg>
+        <svg class="icon-svg icon-sun" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- -------------------------------------------------------------
+       MAIN APP CONTAINER
+       ------------------------------------------------------------- -->
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar-left" id="sidebarLeft">
+      <div class="sidebar-section-title">
+        <span>Shell Scripting Guide</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item">
+          <a href="#welcome" class="sidebar-link active" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Welcome</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#introduction" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span>Introduction</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#getting-started" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span>Getting Started</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#variables-arrays" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="21" y1="9" x2="3" y2="9"></line><line x1="21" y1="15" x2="3" y2="15"></line><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+            <span>Variables & Arrays</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#strings-arithmetic" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="9" x2="19" y2="9"></line><line x1="5" y1="15" x2="19" y2="15"></line><line x1="9" y1="5" x2="9" y2="19"></line><line x1="15" y1="5" x2="15" y2="19"></line></svg>
+            <span>Strings & Arithmetic</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#control-flow" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 2 18 2 18 6 6 6 6 2"></polygon><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><line x1="12" y1="6" x2="12" y2="11"></line></svg>
+            <span>Control Flow</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#loops" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+            <span>Loops</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#functions-arguments" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <span>Functions & Arguments</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#advanced-concepts" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <span>Advanced Concepts</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#automation" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Automation</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#projects" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span>Practical Projects</span>
+          </a>
+        </li>
+        
+        <li class="sidebar-section-title" style="margin-top: 24px;">
+          <span>Quick Lookup</span>
+        </li>
+        <li class="sidebar-item">
+          <a href="#cheat-sheet" class="sidebar-link" onclick="closeSidebarMobile()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Command Cheat Sheet</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- RIGHT SIDEBAR (DYNAMIC TOC) -->
+    <aside class="sidebar-right" id="sidebarRight">
+      <div class="toc-title">On this page</div>
+      <ul class="toc-list" id="tocList">
+        <!-- populated dynamically via JavaScript -->
+      </ul>
+    </aside>
+
+    <!-- CENTER CONTENT PANEL -->
+    <main class="content-panel" id="contentPanel">
+      
+      <!-- =========================================================
+           PAGE 1: WELCOME
+           ========================================================= -->
+      <section class="page-section active" id="welcome">
+        <div class="welcome-hero">
+          <div class="welcome-logo">
+            <svg viewBox="0 0 320 80">
+              <g transform="translate(10, 5)">
+                <path d="M 10 70 L 45 10 L 60 10 L 25 70 Z" fill="#0052FF" />
+                <path class="logo-text-fill" d="M 45 10 L 80 70 L 65 70 L 55 50 L 35 50 L 38 40 L 60 40 L 48 18 Z" fill="#ffffff" />
+              </g>
+              <line x1="110" y1="12" x2="110" y2="68" stroke="currentColor" stroke-width="1.5" opacity="0.15" />
+              <text x="125" y="44" font-family="'Plus Jakarta Sans', sans-serif" font-size="28" font-weight="800" class="logo-text-fill" fill="#ffffff">A-STACK</text>
+              <text x="125" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" letter-spacing="3.5" fill="#0052FF">LEARN • BUILD • GROW</text>
+            </svg>
+          </div>
+          <h1 class="doc-title" style="font-size:32px; margin-bottom:12px;">Shell Scripting Masterclass</h1>
+          <p class="doc-subtitle" style="margin-bottom:24px;">Welcome to Amogh Deshpande's official interactive guide to mastering Bash Shell Scripting and automation.</p>
+          
+          <div class="welcome-social-row">
+            <a href="https://linkedin.com/in/amoghdesh" target="_blank" class="welcome-card-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              <span>Connect on LinkedIn</span>
+            </a>
+            <a href="https://github.com/pandeji005" target="_blank" class="welcome-card-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              <span>Follow on GitHub</span>
+            </a>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="welcome-overview">Modular Learning Roadmap</h2>
+        <p class="doc-p">Explore the basics of shell structure, scripting syntax, arrays, control structures, scheduling, and real-world system administrator projects. Click a card to jump directly to a topic, or use the navigation buttons below to read sequentially.</p>
+
+        <div class="welcome-grid">
+          <div class="welcome-card" onclick="window.location.hash = '#introduction'">
+            <div class="welcome-card-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </div>
+            <h3 class="welcome-card-title">1. Introduction</h3>
+            <p class="welcome-card-p">Demystify shell vs kernel architectures and configure your active shell interpreter environment.</p>
+          </div>
+          
+          <div class="welcome-card" onclick="window.location.hash = '#getting-started'">
+            <div class="welcome-card-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line></svg>
+            </div>
+            <h3 class="welcome-card-title">2. Getting Started</h3>
+            <p class="welcome-card-p">Write your first script, configure permissions, declare comments, and learn basic script invocation.</p>
+          </div>
+
+          <div class="welcome-card" onclick="window.location.hash = '#variables-arrays'">
+            <div class="welcome-card-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+            </div>
+            <h3 class="welcome-card-title">3. Variables & Arrays</h3>
+            <p class="welcome-card-p">Store data in global, readonly, and associative arrays. Extract values with index references and slices.</p>
+          </div>
+
+          <div class="welcome-card" onclick="window.location.hash = '#control-flow'">
+            <div class="welcome-card-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 2 18 2 18 6 6 6 6 2"></polygon><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect></svg>
+            </div>
+            <h3 class="welcome-card-title">4. Control Flow</h3>
+            <p class="welcome-card-p">Implement logic checks with comparison tables, Case statement menus, and logical operator chains.</p>
+          </div>
+
+          <div class="welcome-card" onclick="window.location.hash = '#loops'">
+            <div class="welcome-card-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+            </div>
+            <h3 class="welcome-card-title">5. Loops & Iteration</h3>
+            <p class="welcome-card-p">Iterate elements, read file contents line-by-line, parse CSV structures, and handle infinite executions.</p>
+          </div>
+
+          <div class="welcome-card" onclick="window.location.hash = '#projects'">
+            <div class="welcome-card-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <h3 class="welcome-card-title">6. Practical Projects</h3>
+            <p class="welcome-card-p">Apply your skills to complete scripts: Memory Monitors, Disk space alerts, and Remote Server SSH execution.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 2: INTRODUCTION
+           ========================================================= -->
+      <section class="page-section" id="introduction">
+        <h1 class="doc-title">Introduction to Linux Shell</h1>
+        <p class="doc-subtitle">Understanding the Linux Shell architecture, core types, and scripting definitions.</p>
+
+        <h2 class="doc-h2" id="what-is-a-linux-shell">What is a Linux Shell?</h2>
+        <p class="doc-p">A <span class="doc-bold">Shell</span> is a specialized software utility that provides an interface/environment for users to execute commands and interact with the operating system's kernel. It sits between the user (typing commands or executing scripts) and the underlying operating system kernel, parsing command text and launching processes.</p>
+        <p class="doc-p">To visualize how the shell connects users to system hardware, examine the layered architecture below:</p>
+
+        <div class="diagram-container">
+          <svg viewBox="0 0 700 360" class="diagram-svg">
+            <!-- Applications Ellipse -->
+            <ellipse cx="350" cy="180" rx="300" ry="155" fill="none" stroke="var(--border-color)" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="350" y="45" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="var(--text-muted)" letter-spacing="2" text-anchor="middle">APPLICATIONS & SCRIPTS</text>
+
+            <!-- Shell Ellipse -->
+            <ellipse cx="350" cy="180" rx="220" ry="115" fill="none" stroke="var(--accent-color)" stroke-width="2"/>
+            <text x="350" y="85" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="var(--accent-color)" letter-spacing="2" text-anchor="middle">SHELL (USER INTERFACE)</text>
+
+            <!-- Kernel Ellipse -->
+            <ellipse cx="350" cy="180" rx="140" ry="75" fill="none" stroke="var(--border-color)" stroke-width="1.5"/>
+            <text x="350" y="125" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="var(--text-primary)" letter-spacing="1.5" text-anchor="middle">KERNEL (OS CORE)</text>
+
+            <!-- Hardware Center -->
+            <rect x="260" y="155" width="180" height="50" rx="6" fill="var(--accent-light)" stroke="var(--accent-color)" stroke-width="2"/>
+            <text x="350" y="185" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="800" fill="var(--text-primary)" letter-spacing="1" text-anchor="middle">HARDWARE (CPU/RAM/I/O)</text>
+          </svg>
+          <div class="diagram-label">Linux System Layered Architecture</div>
+        </div>
+
+        <h2 class="doc-h2" id="types-of-shells">Different Types of Shells</h2>
+        <p class="doc-p">Several command-line interpreters have evolved over the history of UNIX and Linux operating systems, offering different features and syntax:</p>
+        <ul class="doc-ul">
+          <li class="doc-li"><span class="doc-bold">sh (Bourne Shell)</span>: The original Unix shell. Extremely basic, but highly compatible; it serves as the baseline standard for POSIX compatibility.</li>
+          <li class="doc-li"><span class="doc-bold">bash (Bourne Again Shell)</span>: The default shell on most standard Linux distributions. It extends `sh` with custom syntax, autocomplete, and history tracking.</li>
+          <li class="doc-li"><span class="doc-bold">zsh (Z Shell)</span>: A highly customizable shell incorporating features from Bash, Ksh, and Tcsh. It is the default shell on modern macOS versions.</li>
+          <li class="doc-li"><span class="doc-bold">ksh (Korn Shell)</span>: Combines features of the classic Bourne shell and C shell, popular in commercial Unix environments.</li>
+          <li class="doc-li"><span class="doc-bold">tcsh (Tenex C Shell)</span>: Extends the classic C-shell (`csh`) using syntax similar to the C programming language.</li>
+          <li class="doc-li"><span class="doc-bold">fish (Friendly Interactive Shell)</span>: Focused on user-friendly interactive features like syntax highlighting out of the box, though it is not POSIX-compliant.</li>
+        </ul>
+
+        <h2 class="doc-h2" id="checking-shell-type">Checking Your Active Shell</h2>
+        <p class="doc-p">You can query the shell type currently running in your command window by reading the positional parameter zero variable:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">echo</span> $0</code></pre>
+          </div>
+        </div>
+        <p class="doc-p">This command will output the path of the active shell binary (e.g. `/bin/bash` or `/bin/zsh`).</p>
+
+        <h2 class="doc-h2" id="what-is-shell-scripting">What is Shell Scripting?</h2>
+        <p class="doc-p">A <span class="doc-bold">Shell Script</span> is a plain text file containing a sequence of operating system commands. When executed, the shell interpreter reads the file line-by-line and processes each command sequentially, as if you had typed them directly into the console.</p>
+        <p class="doc-p">Shell scripting is commonly used for:</p>
+        <ul class="doc-ul">
+          <li class="doc-li">System administration automation (backups, service management).</li>
+          <li class="doc-li">File system manipulations, text analysis, and log processing.</li>
+          <li class="doc-li">Application builds, software installations, and environment setup.</li>
+          <li class="doc-li">Interactive command-line menus for non-technical users.</li>
+        </ul>
+      </section>
+
+      <!-- =========================================================
+           PAGE 3: GETTING STARTED
+           ========================================================= -->
+      <section class="page-section" id="getting-started">
+        <h1 class="doc-title">Getting Started</h1>
+        <p class="doc-subtitle">Writing your first shell script, configuring execute permissions, and using comments.</p>
+
+        <h2 class="doc-h2" id="your-first-script">Your First Basic Script</h2>
+        <p class="doc-p">To write a shell script, create a plain text file (commonly ending in `.sh`, though not strictly required) and input the following lines:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">hello_world.sh</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment">#!/bin/bash</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Hello World!"</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="shebang-declaration">What is the Shebang?</h2>
+        <p class="doc-p">The shebang (<code class="language-bash">#!/bin/bash</code>) is a special character sequence at the very beginning of a script. It consists of the characters `#!` followed by the absolute path to the shell interpreter binary that should execute the script.</p>
+        <p class="doc-p">When you run a script directly (e.g. `./hello_world.sh`), the kernel reads the shebang line to identify which program to spawn (in this case, `/bin/bash`) to parse and execute the script content. Common shebang variants include:</p>
+        <ul class="doc-ul">
+          <li class="doc-li"><code class="language-bash">#!/bin/bash</code>: Explicitly uses the Bash shell.</li>
+          <li class="doc-li"><code class="language-bash">#!/bin/sh</code>: Uses the system's POSIX-compliant standard shell.</li>
+          <li class="doc-li"><code class="language-bash">#!/usr/bin/env bash</code>: Searches the user's active environment path to find and run `bash` (useful for cross-platform portability).</li>
+        </ul>
+
+        <h2 class="doc-h2" id="how-to-run-a-script">How to Execute a Script</h2>
+        <p class="doc-p">By default, newly created text files do not have execute permissions. You must modify the file attributes before running the script directly:</p>
+        
+        <h3 class="doc-h3" id="grant-execute-permissions">1. Grant Execute Permissions</h3>
+        <p class="doc-p">Use the `chmod` command to add the execute permission (`x`) for the current user:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">chmod</span> <span class="cmd-flag">+x</span> hello_world.sh</code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="execute-methods">2. Choose an Execution Method</h3>
+        <p class="doc-p">Once executable, you can run the script using any of the following directory paths:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Method A: Execute relative path (requires ./ prefix if current dir is not in PATH)</span>
+./hello_world.sh
+
+<span class="cmd-comment"># Method B: Execute absolute system path</span>
+/home/paul/scripts/hello_world.sh
+
+<span class="cmd-comment"># Method C: Invoke the interpreter directly (does NOT require chmod +x)</span>
+<span class="cmd-keyword">bash</span> hello_world.sh</code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="terminating-scripts">3. Process Signals</h3>
+        <ul class="doc-ul">
+          <li class="doc-li"><kbd>Ctrl</kbd> + <kbd>C</kbd>: Sends the `SIGINT` interrupt signal, immediately terminating script execution.</li>
+          <li class="doc-li"><kbd>Ctrl</kbd> + <kbd>Z</kbd>: Sends the `SIGTSTP` stop signal, suspending script execution and placing it in the background. You can resume it later using the `fg` command.</li>
+        </ul>
+
+        <h2 class="doc-h2" id="writing-comments">Adding Comments</h2>
+        <p class="doc-p">Comments help explain code logic and are completely ignored by the shell interpreter during execution.</p>
+        
+        <h3 class="doc-h3" id="single-line-comments">Single-line Comments</h3>
+        <p class="doc-p">Use the hash character (`#`) to declare a comment. Everything on the line following the `#` will be ignored:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># This is a single-line comment. The interpreter skips this line.</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Hello!"</span> <span class="cmd-comment"># Inline comments are also supported</span></code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="multi-line-comments">Multi-line Comments</h3>
+        <p class="doc-p">You can write multi-line comments using a <span class="doc-bold">Here Document (HereDoc)</span> block redirected to a dummy command name:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">&lt;&lt;comment</span>
+<span class="cmd-comment">Everything written inside this block is treated as a comment.</span>
+<span class="cmd-comment">You can write multiple lines here.</span>
+<span class="cmd-comment">The block ends when the matching limiter token is found.</span>
+<span class="cmd-keyword">comment</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 4: VARIABLES & ARRAYS
+           ========================================================= -->
+      <section class="page-section" id="variables-arrays">
+        <h1 class="doc-title">Variables & Arrays</h1>
+        <p class="doc-subtitle">Managing data storage using shell variables, constant readonly containers, and indexed or associative arrays.</p>
+
+        <h2 class="doc-h2" id="declaring-variables">Declaring Variables</h2>
+        <p class="doc-p">Shell variables store strings or numbers. Use the variable name followed by the equal sign (`=`) and the value. <span class="doc-bold">Do not include spaces around the equal sign.</span></p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Declare a variable</span>
+NAME="Paul"
+
+<span class="cmd-comment"># Declare a variable using command substitution (runs the command and stores output)</span>
+SERVER_NAME=$(hostname)
+
+<span class="cmd-comment"># Access and print the variables (prefix name with $)</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Hello, my name is $NAME"</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Running on host: ${SERVER_NAME}"</span></code></pre>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <div class="callout-title">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Space Restrictions
+          </div>
+          <p>Writing <code>NAME = "Paul"</code> (with spaces) will result in a syntax error because the shell will attempt to execute a command named <code>NAME</code> with arguments <code>=</code> and <code>"Paul"</code>.</p>
+        </div>
+
+        <h2 class="doc-h2" id="readonly-variables">Readonly Variables</h2>
+        <p class="doc-p">To make a variable immutable (so its value cannot be changed or unset during script execution), mark it as read-only:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">readonly</span> PI="3.14159"
+PI="3.14" <span class="cmd-comment"># Fails! Bash will display: "PI: readonly variable"</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="standard-indexed-arrays">Standard Indexed Arrays</h2>
+        <p class="doc-p">Indexed arrays store multiple values indexed by integers starting at zero.</p>
+        
+        <h3 class="doc-h3" id="defining-indexed-arrays">1. Defining and Reading Arrays</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Define an array (space separated items inside parentheses)</span>
+myArray=( 1 2 Hello "Hey man" )
+
+<span class="cmd-comment"># Access specific indices (curly braces are required)</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"${myArray[0]}"</span> <span class="cmd-comment"># Outputs: 1</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"${myArray[2]}"</span> <span class="cmd-comment"># Outputs: Hello</span></code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="array-length-slicing">2. Array Length & Slicing</h3>
+        <p class="doc-p">You can query the array length or extract slices of items using specialized syntax:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Get total number of elements in the array (# prefix with * index)</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"${#myArray[*]}"</span> <span class="cmd-comment"># Outputs: 4</span>
+
+<span class="cmd-comment"># Slice: Retrieve all elements from index 1 onwards</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"${myArray[*]:1}"</span> <span class="cmd-comment"># Outputs: 2 Hello Hey man</span>
+
+<span class="cmd-comment"># Slice: Retrieve 2 elements starting from index 1</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"${myArray[*]:1:2}"</span> <span class="cmd-comment"># Outputs: 2 Hello</span></code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="updating-indexed-arrays">3. Appending Values</h3>
+        <p class="doc-p">Use the operator `+=` to append new values onto an existing array:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">myArray+=( 5 6 8 )
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"${myArray[*]}"</span> <span class="cmd-comment"># Outputs: 1 2 Hello Hey man 5 6 8</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="associative-arrays">Associative Arrays (Key-Value)</h2>
+        <p class="doc-p">Associative arrays store key-value pairs where keys can be strings. <span class="doc-bold">In Bash, associative arrays must be explicitly declared first</span> using `declare -A`:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Declare associative array explicitly</span>
+<span class="cmd-keyword">declare</span> <span class="cmd-flag">-A</span> userArray
+
+<span class="cmd-comment"># Populate key-value elements</span>
+userArray=( [name]=Paul [age]=20 [role]=admin )
+
+<span class="cmd-comment"># Retrieve element by key name</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"User name is: ${userArray[name]}"</span> <span class="cmd-comment"># Outputs: Paul</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"User is ${userArray[age]} years old."</span> <span class="cmd-comment"># Outputs: 20</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 5: STRINGS & ARITHMETIC
+           ========================================================= -->
+      <section class="page-section" id="strings-arithmetic">
+        <h1 class="doc-title">Strings & Arithmetic</h1>
+        <p class="doc-subtitle">Manipulating text strings, prompting for user input, and performing math calculations.</p>
+
+        <h2 class="doc-h2" id="string-manipulation">String Operations</h2>
+        <p class="doc-p">Bash supports several built-in parameters modifications to manipulate strings efficiently without launching sub-processes:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">myVar="Hello World!"
+
+<span class="cmd-comment"># 1. Retrieve string length (# prefix)</span>
+length=${#myVar}
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$length"</span> <span class="cmd-comment"># Outputs: 12</span>
+
+<span class="cmd-comment"># 2. Uppercase conversion (^^ suffix)</span>
+upper=${myVar^^}
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$upper"</span> <span class="cmd-comment"># Outputs: HELLO WORLD!</span>
+
+<span class="cmd-comment"># 3. Lowercase conversion (,, suffix)</span>
+lower=${myVar,,}
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$lower"</span> <span class="cmd-comment"># Outputs: hello world!</span>
+
+<span class="cmd-comment"># 4. Search and Replace first occurrence (/find/replace)</span>
+replace=${myVar/World/Buddy}
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$replace"</span> <span class="cmd-comment"># Outputs: Hello Buddy!</span>
+
+<span class="cmd-comment"># 5. String Slicing: ${variable:offset:length}</span>
+slice=${myVar:6:5}
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$slice"</span> <span class="cmd-comment"># Outputs: World</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="taking-user-input">Taking Input from Users</h2>
+        <p class="doc-p">Use the `read` command to halt execution and wait for user input. You can read into a variable directly or display a prompt using the `-p` flag:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Simple Read (waits for typing, then stores in 'user_input')</span>
+<span class="cmd-keyword">read</span> user_input
+
+<span class="cmd-comment"># Read with an inline prompt string (-p flag)</span>
+<span class="cmd-keyword">read</span> <span class="cmd-flag">-p</span> <span class="cmd-arg">"Enter your username: "</span> NAME
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Greeting, $NAME!"</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="arithmetic-operations">Arithmetic Operations</h2>
+        <p class="doc-p">By default, Bash treats variables as strings. To calculate numeric values, use the `let` built-in command or double parentheses syntax <code class="language-bash">(( ... ))</code>:</p>
+        
+        <h3 class="doc-h3" id="using-let-command">Method A: Using the `let` Command</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">a=5
+
+<span class="cmd-comment"># Perform calculations and assignments</span>
+<span class="cmd-keyword">let</span> a++      <span class="cmd-comment"># Increment a by 1 (a is now 6)</span>
+<span class="cmd-keyword">let</span> result=a*10
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$result"</span> <span class="cmd-comment"># Outputs: 60</span></code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="using-double-parentheses">Method B: Using Double Parentheses</h3>
+        <p class="doc-p">Double parentheses evaluate C-style arithmetic expressions. This is the preferred method for modern scripts because it integrates cleanly into conditional constructs:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">a=5
+
+<span class="cmd-comment"># Math operations inside double parentheses</span>
+((a++))
+((result=a*10))
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"$result"</span> <span class="cmd-comment"># Outputs: 60</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 6: CONTROL FLOW
+           ========================================================= -->
+      <section class="page-section" id="control-flow">
+        <h1 class="doc-title">Control Flow</h1>
+        <p class="doc-subtitle">Directing script execution path using If statements, comparison operators, Case menus, and logical conditions.</p>
+
+        <h2 class="doc-h2" id="if-else-statements">If-Else Conditional Statements</h2>
+        <p class="doc-p">Conditional logic relies on tests surrounded by brackets `[ ]`. Remember to leave spaces inside the brackets around your test variables.</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">marks=45
+
+<span class="cmd-keyword">if</span> [ $marks <span class="cmd-flag">-gt</span> 40 ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"You are PASS"</span>
+<span class="cmd-keyword">else</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"You are FAIL"</span>
+<span class="cmd-keyword">fi</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="comparison-operators">Comparison Operators</h2>
+        <p class="doc-p">In shell scripting, standard symbols like `>` or `<` are used for redirection. Therefore, Bash uses alphanumeric flags to evaluate integer comparisons inside bracket tests:</p>
+        
+        <div class="doc-table-wrapper">
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Operation</th>
+                <th>Comparison Flag</th>
+                <th>Alternative String Symbol</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="doc-bold">Equal</span></td>
+                <td><code>-eq</code></td>
+                <td><code>==</code> (string check)</td>
+              </tr>
+              <tr>
+                <td><span class="doc-bold">Not Equal</span></td>
+                <td><code>-ne</code></td>
+                <td><code>!=</code> (string check)</td>
+              </tr>
+              <tr>
+                <td><span class="doc-bold">Greater Than</span></td>
+                <td><code>-gt</code></td>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <td><span class="doc-bold">Greater Than or Equal</span></td>
+                <td><code>-ge</code></td>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <td><span class="doc-bold">Less Than</span></td>
+                <td><code>-lt</code></td>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <td><span class="doc-bold">Less Than or Equal</span></td>
+                <td><code>-le</code></td>
+                <td>N/A</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="doc-h2" id="elif-statements">Multiple Conditions (Elif)</h2>
+        <p class="doc-p">Use `elif` to check sequential conditions:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">marks=75
+
+<span class="cmd-keyword">if</span> [ $marks <span class="cmd-flag">-ge</span> 80 ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"First Division"</span>
+<span class="cmd-keyword">elif</span> [ $marks <span class="cmd-flag">-ge</span> 60 ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Second Division"</span>
+<span class="cmd-keyword">else</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Fail"</span>
+<span class="cmd-keyword">fi</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="case-statements">Case Statements (Menus)</h2>
+        <p class="doc-p">Case statements match a single variable against multiple string options or regex patterns. Each block of statements is terminated with double semicolons `;;`, and the entire case structure ends with `esac` (case backwards):</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">echo</span> <span class="cmd-arg">"Choose an option:"</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"a = See current date"</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"b = List files in current dir"</span>
+
+<span class="cmd-keyword">read</span> choice
+
+<span class="cmd-keyword">case</span> $choice <span class="cmd-keyword">in</span>
+  a) <span class="cmd-keyword">date</span>;;
+  b) <span class="cmd-keyword">ls</span>;;
+  *) <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Invalid input"</span>;;
+<span class="cmd-keyword">esac</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="logical-operators">Logical Operators</h2>
+        <p class="doc-p">Evaluate compound conditions using logical operators:</p>
+        <ul class="doc-ul">
+          <li class="doc-li"><code class="language-bash">condition1 && condition2</code>: <span class="doc-bold">AND</span>. Both conditions must be true for the compound expression to return true.</li>
+          <li class="doc-li"><code class="language-bash">condition1 || condition2</code>: <span class="doc-bold">OR</span>. Returns true if at least one of the conditions is true.</li>
+          <li class="doc-li"><code class="language-bash">! condition</code>: <span class="doc-bold">NOT</span>. Reverses the boolean result of a test.</li>
+        </ul>
+
+        <h3 class="doc-h3" id="short-circuit-chaining">Short-circuit Chaining</h3>
+        <p class="doc-p">You can chain commands using `&&` and `||` inline to write compact, branchless statements:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Syntax: condition1 && condition2 || condition3</span>
+<span class="cmd-comment"># Executes condition2 only if 1 is true. Otherwise, executes condition3.</span>
+[ $marks <span class="cmd-flag">-gt</span> 40 ] <span class="cmd-keyword">&amp;&amp;</span> <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Passed"</span> <span class="cmd-keyword">||</span> <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Failed"</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 7: LOOPS
+           ========================================================= -->
+      <section class="page-section" id="loops">
+        <h1 class="doc-title">Loops & File Iteration</h1>
+        <p class="doc-subtitle">Automating repetitive tasks using For, While, and Until loops, and parsing raw file/CSV streams.</p>
+
+        <h2 class="doc-h2" id="for-loops">For Loops</h2>
+        <p class="doc-p">For loops iterate over a predefined list of words or a sequence range:</p>
+        
+        <h3 class="doc-h3" id="iterating-over-lists">1. Basic List & Range Loop</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Iterate explicit numbers</span>
+<span class="cmd-keyword">for</span> i <span class="cmd-keyword">in</span> 1 2 3 4 5
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Number is $i"</span>
+<span class="cmd-keyword">done</span>
+
+<span class="cmd-comment"># Iterate names</span>
+<span class="cmd-keyword">for</span> name <span class="cmd-keyword">in</span> Raju Sham Baburao
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Name: $name"</span>
+<span class="cmd-keyword">done</span>
+
+<span class="cmd-comment"># Iterate ranges using brace expansion</span>
+<span class="cmd-keyword">for</span> p <span class="cmd-keyword">in</span> {1..5}
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Val: $p"</span>
+<span class="cmd-keyword">done</span></code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="iterating-file-words">2. Iterating Words from a File</h3>
+        <p class="doc-p">You can load file contents and loop over each space-separated word using command substitution:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">items="/home/paul/file.txt"
+
+<span class="cmd-keyword">for</span> item <span class="cmd-keyword">in</span> $(cat $items)
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Word: $item"</span>
+<span class="cmd-keyword">done</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="while-loops">While Loops</h2>
+        <p class="doc-p">While loops execute a block of commands repeatedly as long as the evaluation condition remains true:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">count=0
+num=5
+
+<span class="cmd-keyword">while</span> [ $count <span class="cmd-flag">-le</span> $num ]
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Numbers are $count"</span>
+  <span class="cmd-keyword">let</span> count++
+<span class="cmd-keyword">done</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="until-loops">Until Loops</h2>
+        <p class="doc-p">Until loops are the inverse of while loops: they execute repeatedly as long as the test condition is false, halting when the condition evaluates to true:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">a=5
+
+<span class="cmd-keyword">until</span> [ $a <span class="cmd-flag">-eq</span> 1 ]
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Value: $a"</span>
+  a=$(expr $a - 1)
+<span class="cmd-keyword">done</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="infinite-loops">Infinite Loops</h2>
+        <p class="doc-p">Declare an infinite loop by testing a command that always returns success (like `true`):</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">while</span> <span class="cmd-keyword">true</span>
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"System active..."</span>
+  <span class="cmd-keyword">sleep</span> 2s
+<span class="cmd-keyword">done</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="reading-file-streams">Reading File Streams Line-by-Line</h2>
+        <p class="doc-p">For loop iteration splits contents by space delimiters, which breaks full-sentence lines. To read file lines containing spaces, use a `while read` loop connected to file redirection:</p>
+        
+        <h3 class="doc-h3" id="read-plain-text">1. Reading a Plain Text File</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">while</span> <span class="cmd-keyword">read</span> myVar
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Line Content: $myVar"</span>
+<span class="cmd-keyword">done</span> &lt; file_name.txt</code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="read-csv-files">2. Reading CSV Data Fields</h3>
+        <p class="doc-p">You can parse comma-separated columns by declaring the Internal Field Separator (`IFS`) variable local to the `read` command:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">while</span> IFS="," <span class="cmd-keyword">read</span> f1 f2 f3
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Column 1: $f1"</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Column 2: $f2"</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Column 3: $f3"</span>
+<span class="cmd-keyword">done</span> &lt; data.csv</code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="csv-skipping-header">3. Skipping CSV Header Rows</h3>
+        <p class="doc-p">If a CSV file contains a header row, pipe the stream through `awk` to filter out the first row before feeding the loop:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># awk 'NR!=1 {print}' matches all rows except row index 1</span>
+<span class="cmd-keyword">cat</span> myfile.csv | <span class="cmd-keyword">awk</span> <span class="cmd-arg">'NR!=1 {print}'</span> | <span class="cmd-keyword">while</span> IFS="," <span class="cmd-keyword">read</span> f1 f2 f3
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Data: $f1, $f2, $f3"</span>
+<span class="cmd-keyword">done</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 8: FUNCTIONS & ARGUMENTS
+           ========================================================= -->
+      <section class="page-section" id="functions-arguments">
+        <h1 class="doc-title">Functions & Arguments</h1>
+        <p class="doc-subtitle">Creating reusable command blocks, managing variables scope, and parsing script command-line arguments.</p>
+
+        <h2 class="doc-h2" id="defining-functions">Creating Reusable Functions</h2>
+        <p class="doc-p">Functions encapsulate a block of code, reducing redundancy. Bash supports two syntax formats for declaring functions:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Syntax Format 1: Using the function keyword</span>
+<span class="cmd-keyword">function</span> myfun {
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Hi, this is Syntax 1"</span>
+}
+
+<span class="cmd-comment"># Syntax Format 2: standard parentheses syntax (Preferred)</span>
+otherfun() {
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Hello, this is Syntax 2"</span>
+}
+
+<span class="cmd-comment"># Call functions by their name (DO NOT write parentheses when calling)</span>
+myfun
+otherfun</code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="function-scope-arguments">Function Arguments & Scope</h2>
+        <p class="doc-p">Functions do not accept arguments inside parentheses. Instead, parameters are passed like standard script parameters and read using positional variables (`$1`, `$2`, etc.).</p>
+        <p class="doc-p">Always use the `local` keyword inside functions to prevent variables from leaking into the global script scope:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">addition() {
+  <span class="cmd-comment"># Declare local variables scope</span>
+  <span class="cmd-keyword">local</span> num1=$1
+  <span class="cmd-keyword">local</span> num2=$2
+  
+  <span class="cmd-keyword">local</span> sum
+  <span class="cmd-keyword">let</span> sum=num1+num2
+  
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Sum of $num1 and $num2 is $sum"</span>
+}
+
+<span class="cmd-comment"># Call function passing arguments (separated by space)</span>
+addition 12 13</code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="script-arguments">Parsing Script Arguments</h2>
+        <p class="doc-p">When you launch a script from your command window, you can supply parameter arguments (e.g. `./script.sh arg1 arg2`). Access these arguments using positional variables:</p>
+        
+        <h3 class="doc-h3" id="special-arguments-variables">Special Arguments Variables</h3>
+        <ul class="doc-ul">
+          <li class="doc-li"><code class="language-bash">$#</code>: Returns the total count of arguments passed to the script.</li>
+          <li class="doc-li"><code class="language-bash">$@</code>: Returns a list containing all arguments passed to the script.</li>
+          <li class="doc-li"><code class="language-bash">$1, $2, ...</code>: Accesses the specific argument at position index 1, 2, etc.</li>
+        </ul>
+
+        <h3 class="doc-h3" id="looping-arguments">Looping and Shifting Arguments</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Print total count</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Total arguments: $#"</span>
+
+<span class="cmd-comment"># Loop through all arguments</span>
+<span class="cmd-keyword">for</span> arg <span class="cmd-keyword">in</span> $@
+<span class="cmd-keyword">do</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Argument is: $arg"</span>
+<span class="cmd-keyword">done</span>
+
+<span class="cmd-comment"># Shifting arguments: drops $1, shifts other arguments left</span>
+<span class="cmd-comment"># If args were: A B C</span>
+<span class="cmd-keyword">shift</span>
+<span class="cmd-comment"># Now args are: B C</span>
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"First argument is now: $1"</span> <span class="cmd-comment"># Outputs: B</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 9: ADVANCED CONCEPTS
+           ========================================================= -->
+      <section class="page-section" id="advanced-concepts">
+        <h1 class="doc-title">Advanced Shell Programming</h1>
+        <p class="doc-subtitle">Deep dive into built-in signals, file tests, system variables, redirects, logging, debugging, and background operations.</p>
+
+        <h2 class="doc-h2" id="loop-builtins">Loop Flow Controls</h2>
+        <ul class="doc-ul">
+          <li class="doc-li"><span class="doc-bold">break</span>: Exits the parent loop immediately.</li>
+          <li class="doc-li"><span class="doc-bold">continue</span>: Skips remaining commands in the current loop iteration and starts the next iteration.</li>
+        </ul>
+
+        <h2 class="doc-h2" id="status-exit">Sleep, Exit & Exit Status ($?)</h2>
+        <p class="doc-p">Use `sleep` to pause execution, and `exit` to terminate script execution instantly. Every command returns an exit status (from 0 to 255) indicating its result:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">sleep</span> 1s <span class="cmd-comment"># Pauses script for 1 second</span>
+
+<span class="cmd-keyword">exit</span> 0   <span class="cmd-comment"># Terminates script. Status 0 indicates success.</span>
+
+<span class="cmd-comment"># Query the status code of the last run command using $?</span>
+<span class="cmd-keyword">ls</span> /nonexistent_directory
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Exit status: $?"</span> <span class="cmd-comment"># Outputs a non-zero integer (usually 2), indicating failure.</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="file-directory-test">File and Directory Checks</h2>
+        <p class="doc-p">Evaluate file path existence and type using test operators:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Test if a directory exists (-d flag)</span>
+<span class="cmd-keyword">if</span> [ <span class="cmd-flag">-d</span> /home/paul/scripts ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Directory exists"</span>
+<span class="cmd-keyword">fi</span>
+
+<span class="cmd-comment"># Test if a directory does not exist (! prefix)</span>
+<span class="cmd-keyword">if</span> [ <span class="cmd-flag">! -d</span> /home/paul/scripts ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Directory does not exist"</span>
+<span class="cmd-keyword">fi</span>
+
+<span class="cmd-comment"># Test if a file exists (-f flag)</span>
+<span class="cmd-keyword">if</span> [ <span class="cmd-flag">-f</span> backup.tar.gz ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"File exists"</span>
+<span class="cmd-keyword">fi</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="system-variables">Special System Variables</h2>
+        <p class="doc-p">Bash pre-populates several internal variables containing runtime metadata:</p>
+        <ul class="doc-ul">
+          <li class="doc-li"><code class="language-bash">$0</code> (or <code class="language-bash">${0}</code>): The name of the executing script itself.</li>
+          <li class="doc-li"><code class="language-bash">$RANDOM</code>: Returns a random integer between 0 and 32767 on each read.</li>
+          <li class="doc-li"><code class="language-bash">$UID</code>: Returns the User ID numeric key of the current logged-in user (root is always 0).</li>
+        </ul>
+
+        <h2 class="doc-h2" id="output-redirection">Redirections & /dev/null</h2>
+        <p class="doc-p">Use `>` to redirect and overwrite stdout to files, and `>>` to append. To discard output completely, redirect it to the null virtual device:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Discard both standard output and error output using &> /dev/null</span>
+<span class="cmd-keyword">cd</span> /root <span class="cmd-keyword">&amp;&gt;</span> /dev/null</code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="logging-messages">Logging Messages</h2>
+        <p class="doc-p">Integrate messages into standard system syslog files using the `logger` utility. Logs are typically recorded under `/var/log/messages`:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">logger</span> <span class="cmd-arg">"Sysadmin backup script initialized"</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="debugging-scripts">Debugging Scripts</h2>
+        <p class="doc-p">Place control flags at the top of your script to configure execution behavior and assist in troubleshooting:</p>
+        <ul class="doc-ul">
+          <li class="doc-li"><code class="language-bash">set -x</code>: <span class="doc-bold">Command Tracing</span>. Prints each command and its evaluated arguments to stdout before executing it.</li>
+          <li class="doc-li"><code class="language-bash">set -e</code>: <span class="doc-bold">Exit Immediately</span>. Halts script execution immediately if any command returns a non-zero exit status.</li>
+        </ul>
+
+        <h2 class="doc-h2" id="running-background">Background execution (nohup)</h2>
+        <p class="doc-p">To keep a script running in the background even if you close the terminal window or disconnect your session, prefix with `nohup` (no hangup) and append an ampersand (`&`):</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-keyword">nohup</span> ./heavy_job.sh <span class="cmd-keyword">&amp;</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 10: AUTOMATION
+           ========================================================= -->
+      <section class="page-section" id="automation">
+        <h1 class="doc-title">Automation & Scheduling</h1>
+        <p class="doc-subtitle">Scheduling one-time tasks using AT, and configuring recurring operations via Crontab cron systems.</p>
+
+        <h2 class="doc-h2" id="one-time-scheduling">One-Time Tasks (AT)</h2>
+        <p class="doc-p">The `at` utility schedules command blocks to execute exactly once at a specific date and time:</p>
+        
+        <h3 class="doc-h3" id="at-syntax">1. Scheduling a Command</h3>
+        <p class="doc-p">Type `at` followed by the execution time, enter your command list, and press <kbd>Ctrl</kbd> + <kbd>D</kbd> to save:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash">at 12:09 PM
+at&gt; ./backup.sh
+at&gt; <kbd>Ctrl + D</kbd></code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="managing-at-jobs">2. Querying and Deleting Jobs</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># List scheduled jobs</span>
+atq
+
+<span class="cmd-comment"># Remove a scheduled job by its numeric ID</span>
+atrm 3</code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="recurring-scheduling">Recurring Tasks (Crontab)</h2>
+        <p class="doc-p">The system cron service executes tasks repeatedly at defined times based on configurations in the user's crontab file:</p>
+        
+        <h3 class="doc-h3" id="crontab-commands">1. Crontab Commands</h3>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># List all active cron jobs</span>
+crontab -l
+
+<span class="cmd-comment"># Open crontab in text editor</span>
+crontab -e</code></pre>
+          </div>
+        </div>
+
+        <h3 class="doc-h3" id="crontab-syntax">2. Cron Syntax Fields</h3>
+        <p class="doc-p">Each cron entry consists of 5 cron time fields followed by the command to execute:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">Terminal</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment"># Run backup script at 12:00 AM every single day:</span>
+0 0 * * * cd /home/paul/scripts && ./create_file.sh</code></pre>
+          </div>
+        </div>
+
+        <div class="diagram-container">
+          <svg viewBox="0 0 600 240" class="diagram-svg">
+            <!-- Asterisks -->
+            <g transform="translate(45, 10)">
+              <text x="50" y="50" font-family="'Fira Code', monospace" font-size="42" font-weight="bold" fill="var(--accent-color)">*</text>
+              <text x="150" y="50" font-family="'Fira Code', monospace" font-size="42" font-weight="bold" fill="var(--accent-color)">*</text>
+              <text x="250" y="50" font-family="'Fira Code', monospace" font-size="42" font-weight="bold" fill="var(--accent-color)">*</text>
+              <text x="350" y="50" font-family="'Fira Code', monospace" font-size="42" font-weight="bold" fill="var(--accent-color)">*</text>
+              <text x="450" y="50" font-family="'Fira Code', monospace" font-size="42" font-weight="bold" fill="var(--accent-color)">*</text>
+
+              <!-- Lines -->
+              <path d="M 62 65 L 62 130" stroke="var(--border-color)" stroke-width="1.5" fill="none"/>
+              <path d="M 162 65 L 162 130" stroke="var(--border-color)" stroke-width="1.5" fill="none"/>
+              <path d="M 262 65 L 262 130" stroke="var(--border-color)" stroke-width="1.5" fill="none"/>
+              <path d="M 362 65 L 362 130" stroke="var(--border-color)" stroke-width="1.5" fill="none"/>
+              <path d="M 462 65 L 462 130" stroke="var(--border-color)" stroke-width="1.5" fill="none"/>
+
+              <!-- Cards -->
+              <!-- Minute -->
+              <rect x="17" y="130" width="90" height="70" rx="6" fill="var(--bg-secondary)" stroke="var(--border-color)" stroke-width="1.5"/>
+              <text x="62" y="150" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="var(--text-primary)" text-anchor="middle">MINUTE</text>
+              <text x="62" y="170" font-family="'Fira Code', monospace" font-size="10" fill="var(--accent-color)" text-anchor="middle">0 - 59</text>
+              <text x="62" y="185" font-family="'Inter', sans-serif" font-size="8.5" fill="var(--text-muted)" text-anchor="middle">Exec Minute</text>
+
+              <!-- Hour -->
+              <rect x="117" y="130" width="90" height="70" rx="6" fill="var(--bg-secondary)" stroke="var(--border-color)" stroke-width="1.5"/>
+              <text x="162" y="150" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="var(--text-primary)" text-anchor="middle">HOUR</text>
+              <text x="162" y="170" font-family="'Fira Code', monospace" font-size="10" fill="var(--accent-color)" text-anchor="middle">0 - 23</text>
+              <text x="162" y="185" font-family="'Inter', sans-serif" font-size="8.5" fill="var(--text-muted)" text-anchor="middle">24-hour time</text>
+
+              <!-- Day of Month -->
+              <rect x="217" y="130" width="90" height="70" rx="6" fill="var(--bg-secondary)" stroke="var(--border-color)" stroke-width="1.5"/>
+              <text x="262" y="150" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="var(--text-primary)" text-anchor="middle">DAY OF MONTH</text>
+              <text x="262" y="170" font-family="'Fira Code', monospace" font-size="10" fill="var(--accent-color)" text-anchor="middle">1 - 31</text>
+              <text x="262" y="185" font-family="'Inter', sans-serif" font-size="8.5" fill="var(--text-muted)" text-anchor="middle">Calendar Day</text>
+
+              <!-- Month -->
+              <rect x="317" y="130" width="90" height="70" rx="6" fill="var(--bg-secondary)" stroke="var(--border-color)" stroke-width="1.5"/>
+              <text x="362" y="150" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="var(--text-primary)" text-anchor="middle">MONTH</text>
+              <text x="362" y="170" font-family="'Fira Code', monospace" font-size="10" fill="var(--accent-color)" text-anchor="middle">1 - 12</text>
+              <text x="362" y="185" font-family="'Inter', sans-serif" font-size="8.5" fill="var(--text-muted)" text-anchor="middle">Jan(1)-Dec(12)</text>
+
+              <!-- Day of Week -->
+              <rect x="417" y="130" width="90" height="70" rx="6" fill="var(--bg-secondary)" stroke="var(--border-color)" stroke-width="1.5"/>
+              <text x="462" y="150" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="var(--text-primary)" text-anchor="middle">DAY OF WEEK</text>
+              <text x="462" y="170" font-family="'Fira Code', monospace" font-size="10" fill="var(--accent-color)" text-anchor="middle">0 - 6</text>
+              <text x="462" y="185" font-family="'Inter', sans-serif" font-size="8.5" fill="var(--text-muted)" text-anchor="middle">Sunday = 0</text>
+            </g>
+          </svg>
+          <div class="diagram-label">Crontab Time Field Configurations</div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 11: PRACTICAL PROJECTS
+           ========================================================= -->
+      <section class="page-section" id="projects">
+        <h1 class="doc-title">Practical Sysadmin Projects</h1>
+        <p class="doc-subtitle">Write and deploy three real-world administrative automation scripts.</p>
+
+        <h2 class="doc-h2" id="project-1">Project 1: Monitoring Free RAM Space</h2>
+        <p class="doc-p">This script parses outputs from the system memory command `free` to check available RAM and outputs a warning alert if the free memory is below a defined threshold (e.g. 500 MB):</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">ram_monitor.sh</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment">#!/bin/bash</span>
+
+<span class="cmd-comment"># Define minimum memory threshold (in Megabytes)</span>
+THRESHOLD=500
+
+<span class="cmd-comment"># Parse available memory using free command, grep, and awk</span>
+FREE_RAM=$(free -m | grep "Mem:" | awk '{print $4}')
+
+<span class="cmd-keyword">echo</span> <span class="cmd-arg">"Active system free memory: ${FREE_RAM}MB"</span>
+
+<span class="cmd-keyword">if</span> [ $FREE_RAM <span class="cmd-flag">-lt</span> $THRESHOLD ]
+<span class="cmd-keyword">then</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"WARNING: Active free memory is critically low!"</span>
+  <span class="cmd-keyword">logger</span> <span class="cmd-arg">"CRITICAL ALERT: System RAM is low. Free RAM: ${FREE_RAM}MB"</span>
+<span class="cmd-keyword">else</span>
+  <span class="cmd-keyword">echo</span> <span class="cmd-arg">"Memory status is within healthy boundaries."</span>
+<span class="cmd-keyword">fi</span></code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="project-2">Project 2: Disk Space Monitor with Email Alerts</h2>
+        <p class="doc-p">This script queries partitions usage statistics using `df -H`. If partition usage exceeds 80%, it compiles a detailed alert warning and sends it to the sysadmin email address:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">disk_alert.sh</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment">#!/bin/bash</span>
+
+<span class="cmd-comment"># Set threshold percentage value</span>
+THRESHOLD=80
+ADMIN_EMAIL="admin@company.com"
+
+<span class="cmd-comment"># Query disk usage and loop through results, skipping header row</span>
+df -H | awk 'NR!=1 {print $5 " " $1}' | while read usage partition
+do
+  <span class="cmd-comment"># Strip percentage sign to get numeric value</span>
+  pct_val=${usage/\%/}
+  
+  if [ $pct_val -ge $THRESHOLD ]
+  then
+    echo "WARNING: Partition $partition is at ${pct_val}% usage!"
+    # Send email alert using mail command
+    echo "Disk space critical on $partition (${pct_val}%)" | mail -s "Disk Space Alert: $partition" $ADMIN_EMAIL
+  fi
+done</code></pre>
+          </div>
+        </div>
+
+        <h2 class="doc-h2" id="project-3">Project 3: Access Remote Servers & Run Checks</h2>
+        <p class="doc-p">This script reads a list of target server IP addresses from a text file, SSHs into each server using secure keys, and runs system diagnostics remotely:</p>
+        <div class="terminal-block">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+            <span class="terminal-title">remote_ssh_ops.sh</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div class="terminal-body">
+            <pre><code class="language-bash"><span class="cmd-comment">#!/bin/bash</span>
+
+SERVER_FILE="servers.txt"
+
+if [ ! -f $SERVER_FILE ]
+then
+  echo "Error: Server IP list $SERVER_FILE not found."
+  exit 1
+fi
+
+# Loop through IPs line-by-line in text database file
+while read server_ip
+do
+  echo "============================================="
+  echo "Connecting and executing diagnostics on: $server_ip"
+  echo "============================================="
+  
+  # Run commands on remote host via ssh (non-interactive mode)
+  ssh -o ConnectTimeout=5 paul@$server_ip <<EOF
+    echo "--- System Uptime ---"
+    uptime
+    echo "--- Free Disk Spaces ---"
+    df -h /
+EOF
+
+done < $SERVER_FILE</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PAGE 12: CHEAT SHEET
+           ========================================================= -->
+      <section class="page-section" id="cheat-sheet">
+        <h1 class="doc-title">Shell Scripting Cheat Sheet</h1>
+        <p class="doc-subtitle">Filter, search, and instantly copy common shell scripting code snippets and command lines.</p>
+
+        <div class="cheat-toolbar">
+          <div class="cheat-search-wrapper">
+            <svg class="cheat-search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="cheat-search-input" id="cheatSearchInput" placeholder="Filter commands by typing keywords..." oninput="filterCheatSheet()">
+          </div>
+          <div class="cheat-filters">
+            <button class="cheat-filter-btn active" data-category="all" onclick="setCheatFilter('all')">All Commands</button>
+            <button class="cheat-filter-btn" data-category="basics" onclick="setCheatFilter('basics')">Basics</button>
+            <button class="cheat-filter-btn" data-category="variables" onclick="setCheatFilter('variables')">Variables & Arrays</button>
+            <button class="cheat-filter-btn" data-category="strings" onclick="setCheatFilter('strings')">Strings & Inputs</button>
+            <button class="cheat-filter-btn" data-category="control-flow" onclick="setCheatFilter('control-flow')">Control Flow</button>
+            <button class="cheat-filter-btn" data-category="loops" onclick="setCheatFilter('loops')">Loops</button>
+            <button class="cheat-filter-btn" data-category="functions" onclick="setCheatFilter('functions')">Functions & Args</button>
+            <button class="cheat-filter-btn" data-category="advanced" onclick="setCheatFilter('advanced')">Advanced & Automation</button>
+          </div>
+        </div>
+
+        <div class="cheat-grid" id="cheatGrid">
+          <!-- Dynamically populated via Javascript -->
+        </div>
+      </section>
+
+      <!-- PREV / NEXT BUTTONS -->
+      <nav class="bottom-nav">
+        <button class="nav-btn prev" id="prevBtn" onclick="navigatePage(-1)">
+          <span class="nav-btn-label">Previous Chapter</span>
+          <span class="nav-btn-title" id="prevBtnTitle">Introduction</span>
+        </button>
+        <button class="nav-btn next" id="nextBtn" onclick="navigatePage(1)">
+          <span class="nav-btn-label">Next Chapter</span>
+          <span class="nav-btn-title" id="nextBtnTitle">Getting Started</span>
+        </button>
+      </nav>
+
+    </main>
+  </div>
+
+  <!-- SEARCH MODAL OVERLAY -->
+  <div class="search-modal" id="searchModal" onclick="closeSearchModalOnBg(event)">
+    <div class="search-box">
+      <div class="search-box-header">
+        <svg class="icon-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="search-box-input" id="searchBoxInput" placeholder="Type words to search the index database..." oninput="handleSearch(this.value)">
+        <button class="search-close-btn" onclick="closeSearchModal()">ESC</button>
+      </div>
+      <div class="search-results" id="searchResults">
+        <!-- Results rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- -------------------------------------------------------------
+       APPLICATION LOGIC SCRIPTS
+       ------------------------------------------------------------- -->
+  <script>
+    // -------------------------------------------------------------
+    // Documentation Page Registry
+    // -------------------------------------------------------------
+    const PAGES = [
+      { id: "welcome", title: "Welcome" },
+      { id: "introduction", title: "Introduction" },
+      { id: "getting-started", title: "Getting Started" },
+      { id: "variables-arrays", title: "Variables & Arrays" },
+      { id: "strings-arithmetic", title: "Strings & Arithmetic" },
+      { id: "control-flow", title: "Control Flow" },
+      { id: "loops", title: "Loops & File Iteration" },
+      { id: "functions-arguments", title: "Functions & Arguments" },
+      { id: "advanced-concepts", title: "Advanced Shell Programming" },
+      { id: "automation", title: "Automation & Scheduling" },
+      { id: "projects", title: "Practical Sysadmin Projects" },
+      { id: "cheat-sheet", title: "Command Cheat Sheet" }
+    ];
+
+    // -------------------------------------------------------------
+    // Cheat Sheet Command Database
+    // -------------------------------------------------------------
+    const CHEAT_SHEET_COMMANDS = [
+      { cmd: "echo $0", category: "basics", desc: "Retrieve the filename of the active shell interpreter." },
+      { cmd: "chmod +x script.sh", category: "basics", desc: "Add execute file attribute permission for current user." },
+      { cmd: "./script.sh", category: "basics", desc: "Run a shell script located in the current working directory." },
+      { cmd: "bash script.sh", category: "basics", desc: "Invoke and run a shell script explicitly using the Bash interpreter." },
+      { cmd: "VAR=\"value\"", category: "variables", desc: "Define a string variable (no spaces around equal sign)." },
+      { cmd: "VAR=$(hostname)", category: "variables", desc: "Command substitution: execute command and assign stdout value to variable." },
+      { cmd: "readonly VAR=\"val\"", category: "variables", desc: "Define an immutable (read-only) variable." },
+      { cmd: "arr=(1 2 Hello)", category: "variables", desc: "Declare a standard space-separated indexed array." },
+      { cmd: "echo ${arr[0]}", category: "variables", desc: "Retrieve the first element of an indexed array." },
+      { cmd: "echo ${#arr[*]}", category: "variables", desc: "Query the total length/number of items inside an array." },
+      { cmd: "echo ${arr[*]:1:2}", category: "variables", desc: "Slicing: extract 2 array elements starting from index 1." },
+      { cmd: "arr+=(5 6)", category: "variables", desc: "Append and update elements onto an existing array." },
+      { cmd: "declare -A myMap", category: "variables", desc: "Explicitly declare an associative (key-value) array map." },
+      { cmd: "myMap=([name]=Paul)", category: "variables", desc: "Initialize key-value pairs in an associative array." },
+      { cmd: "${#myVar}", category: "strings", desc: "Retrieve total character length of a string." },
+      { cmd: "${myVar^^}", category: "strings", desc: "Convert all letters in a string to uppercase." },
+      { cmd: "${myVar,,}", category: "strings", desc: "Convert all letters in a string to lowercase." },
+      { cmd: "${myVar/find/replace}", category: "strings", desc: "Search and replace first match occurrence inside a string." },
+      { cmd: "${myVar:6:5}", category: "strings", desc: "String slicing: extract 5 characters starting at index 6." },
+      { cmd: "read var_name", category: "strings", desc: "Wait and read user keyboard input into a variable." },
+      { cmd: "read -p \"Prompt\" VAR", category: "strings", desc: "Display custom inline prompt text and read keyboard input." },
+      { cmd: "let a++", category: "strings", desc: "Increment value of variable a by 1 using let command." },
+      { cmd: "((a=5*10))", category: "strings", desc: "Evaluate C-style math arithmetic expression directly." },
+      { cmd: "if [ $a -gt 40 ]; then ... fi", category: "control-flow", desc: "Check comparison condition and execute statements." },
+      { cmd: "-eq , -ne , -gt", category: "control-flow", desc: "Integer comparison operators: Equal, Not Equal, Greater Than." },
+      { cmd: "-ge , -lt , -le", category: "control-flow", desc: "Integer comparison flags: Greater-Equal, Less, Less-Equal." },
+      { cmd: "case $var in ... esac", category: "control-flow", desc: "Multi-branch decision logic matching strings and patterns." },
+      { cmd: "cond1 && cond2", category: "control-flow", desc: "Logical AND compound conditional operator." },
+      { cmd: "cond1 || cond2", category: "control-flow", desc: "Logical OR compound conditional operator." },
+      { cmd: "c1 && c2 || c3", category: "control-flow", desc: "Chaining: execute c2 only if c1 succeeds; otherwise, run c3." },
+      { cmd: "for i in {1..10}; do ... done", category: "loops", desc: "Iterate variable i across a range of numbers." },
+      { cmd: "for item in $(cat f.txt)", category: "loops", desc: "Iterate loop variable over each word in a text file." },
+      { cmd: "while [ $c -le 5 ]; do ... done", category: "loops", desc: "Repeat commands while condition evaluates to true." },
+      { cmd: "until [ $a -eq 1 ]; do ... done", category: "loops", desc: "Repeat command block until condition evaluates to true." },
+      { cmd: "while read var; do ... done < file", category: "loops", desc: "Read a file line-by-line keeping space attributes." },
+      { cmd: "while IFS=\",\" read f1 f2", category: "loops", desc: "Parse a CSV database file into discrete fields." },
+      { cmd: "function name { ... }", category: "functions", desc: "Define function block using the function keyword." },
+      { cmd: "name() { ... }", category: "functions", desc: "Define function using standard parentheses (Preferred)." },
+      { cmd: "local var=\"value\"", category: "functions", desc: "Declare a function-scoped variable." },
+      { cmd: "$#", category: "functions", desc: "Returns total argument count passed to script or function." },
+      { cmd: "$@", category: "functions", desc: "Retrieve a list of all positional parameters passed." },
+      { cmd: "shift", category: "functions", desc: "Shift positional script arguments left by 1 position." },
+      { cmd: "break", category: "advanced", desc: "Break out of and terminate the current running loop." },
+      { cmd: "continue", category: "advanced", desc: "Skip remaining loop commands and start next iteration." },
+      { cmd: "sleep 1s", category: "advanced", desc: "Pause script execution for a specified duration." },
+      { cmd: "exit 0", category: "advanced", desc: "Terminate script execution immediately with exit status." },
+      { cmd: "$?", category: "advanced", desc: "Retrieve exit status code of the last executed command." },
+      { cmd: "[ -d path ]", category: "advanced", desc: "Test if the directory path exists on the system." },
+      { cmd: "[ -f path ]", category: "advanced", desc: "Test if a regular file exists at the given path." },
+      { cmd: "$RANDOM", category: "advanced", desc: "Generate a random integer between 0 and 32767." },
+      { cmd: "$UID", category: "advanced", desc: "Get the User ID numeric key of the current session user." },
+      { cmd: "cd /root &> /dev/null", category: "advanced", desc: "Redirect and discard stdout and stderr messages." },
+      { cmd: "logger \"message\"", category: "advanced", desc: "Send custom log messages to system syslog database." },
+      { cmd: "set -x", category: "advanced", desc: "Enable shell trace debugging prints for execution tracking." },
+      { cmd: "set -e", category: "advanced", desc: "Configure script to exit immediately if any command fails." },
+      { cmd: "nohup ./script.sh &", category: "advanced", desc: "Run script in background immune to session hangup exits." },
+      { cmd: "at 12:00 PM", category: "advanced", desc: "Schedule a command sequence for single execution in future." },
+      { cmd: "atq", category: "advanced", desc: "List currently scheduled one-time at jobs queue." },
+      { cmd: "atrm <id>", category: "advanced", desc: "Remove a scheduled job from the at queue by ID." },
+      { cmd: "crontab -l", category: "advanced", desc: "List active crontab scheduled recurring cron jobs." },
+      { cmd: "crontab -e", category: "advanced", desc: "Open system crontab configurations in editor." }
+    ];
+
+    // -------------------------------------------------------------
+    // Application State Variables
+    // -------------------------------------------------------------
+    let currentTheme = "dark";
+    let activeCheatFilter = "all";
+    let searchIndex = [];
+
+    // -------------------------------------------------------------
+    // Initialization Block
+    // -------------------------------------------------------------
+    window.addEventListener("DOMContentLoaded", () => {
+      initTheme();
+      initRouting();
+      buildSearchIndex();
+      renderCheatSheet();
+      
+      // Hash listener
+      window.addEventListener("hashchange", handleHashChange);
+    });
+
+    // Keyboard Shortcut Bindings
+    window.addEventListener("keydown", (e) => {
+      // Ctrl + K opens search modal
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openSearchModal();
+      }
+      // ESC closes search modal
+      if (e.key === 'Escape') {
+        closeSearchModal();
+      }
+    });
+
+    // -------------------------------------------------------------
+    // Theme Management (Light / Dark)
+    // -------------------------------------------------------------
+    function initTheme() {
+      const savedTheme = localStorage.getItem("theme");
+      const userPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      
+      if (savedTheme) {
+        currentTheme = savedTheme;
+      } else {
+        currentTheme = userPrefersDark ? "dark" : "light";
+      }
+      
+      applyTheme(currentTheme);
+    }
+
+    function toggleTheme() {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(currentTheme);
+      localStorage.setItem("theme", currentTheme);
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      
+      const moonIcon = document.querySelector(".icon-moon");
+      const sunIcon = document.querySelector(".icon-sun");
+      
+      if (theme === "dark") {
+        moonIcon.style.display = "block";
+        sunIcon.style.display = "none";
+      } else {
+        moonIcon.style.display = "none";
+        sunIcon.style.display = "block";
+      }
+      
+      const logoTextPaths = document.querySelectorAll(".logo-text-fill");
+      logoTextPaths.forEach(el => {
+        el.setAttribute("fill", theme === "dark" ? "#ffffff" : "#0F172A");
+      });
+    }
+
+    // -------------------------------------------------------------
+    // Router / Navigation Handler
+    // -------------------------------------------------------------
+    function initRouting() {
+      const hash = window.location.hash;
+      if (hash) {
+        navigateToHash(hash);
+      } else {
+        window.location.hash = "#welcome";
+      }
+    }
+
+    function handleHashChange() {
+      navigateToHash(window.location.hash);
+    }
+
+    function navigateToHash(hash) {
+      const cleanHash = hash.substring(1);
+      
+      let matchedPage = PAGES[0];
+      for (const page of PAGES) {
+        if (cleanHash.startsWith(page.id)) {
+          matchedPage = page;
+          break;
+        }
+      }
+
+      // Hide all pages, show target page
+      const sections = document.querySelectorAll(".page-section");
+      sections.forEach(s => s.classList.remove("active"));
+      
+      const targetSec = document.getElementById(matchedPage.id);
+      if (targetSec) {
+        targetSec.classList.add("active");
+      }
+
+      // Update left sidebar active links
+      const links = document.querySelectorAll(".sidebar-link");
+      links.forEach(l => {
+        const linkHash = l.getAttribute("href");
+        if (linkHash === `#${matchedPage.id}`) {
+          l.classList.add("active");
+        } else {
+          l.classList.remove("active");
+        }
+      });
+
+      // Rebuild Table of Contents
+      generateTOC(matchedPage.id);
+
+      // Handle internal section headers routing scroll
+      if (cleanHash !== matchedPage.id) {
+        setTimeout(() => {
+          const subEl = document.getElementById(cleanHash);
+          if (subEl) {
+            subEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 100);
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      updateNavigationButtons(matchedPage.id);
+    }
+
+    function updateNavigationButtons(activeId) {
+      const idx = PAGES.findIndex(p => p.id === activeId);
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      
+      const prevIdx = idx - 1;
+      const nextIdx = idx + 1;
+      
+      if (prevIdx >= 0) {
+        prevBtn.style.visibility = "visible";
+        document.getElementById("prevBtnTitle").innerText = PAGES[prevIdx].title;
+      } else {
+        prevBtn.style.visibility = "hidden";
+      }
+
+      if (nextIdx < PAGES.length) {
+        nextBtn.style.visibility = "visible";
+        document.getElementById("nextBtnTitle").innerText = PAGES[nextIdx].title;
+      } else {
+        nextBtn.style.visibility = "hidden";
+      }
+    }
+
+    function navigatePage(direction) {
+      const currentHash = window.location.hash.substring(1);
+      let activeId = PAGES[0].id;
+      for (const page of PAGES) {
+        if (currentHash.startsWith(page.id)) {
+          activeId = page.id;
+          break;
+        }
+      }
+      
+      const idx = PAGES.findIndex(p => p.id === activeId);
+      const targetIdx = idx + direction;
+      
+      if (targetIdx >= 0 && targetIdx < PAGES.length) {
+        window.location.hash = `#${PAGES[targetIdx].id}`;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Table of Contents (TOC) Dynamic Builder
+    // -------------------------------------------------------------
+    function generateTOC(pageId) {
+      const tocList = document.getElementById("tocList");
+      tocList.innerHTML = "";
+      
+      const section = document.getElementById(pageId);
+      if (!section) return;
+
+      const headings = section.querySelectorAll("h2, h3");
+      
+      if (headings.length === 0) {
+        document.getElementById("sidebarRight").style.opacity = "0";
+        return;
+      } else {
+        document.getElementById("sidebarRight").style.opacity = "1";
+      }
+
+      headings.forEach((heading, idx) => {
+        if (!heading.id) {
+          heading.id = `${pageId}-heading-${idx}`;
+        }
+
+        const li = document.createElement("li");
+        li.className = "toc-item";
+        
+        const a = document.createElement("a");
+        a.href = `#${heading.id}`;
+        a.className = `toc-link ${heading.tagName.toLowerCase() === 'h3' ? 'indent-3' : ''}`;
+        a.innerText = heading.innerText;
+        
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          heading.scrollIntoView({ behavior: "smooth", block: "start" });
+          window.history.pushState(null, null, `#${heading.id}`);
+        });
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+
+      setupScrollSpy(headings);
+    }
+
+    function setupScrollSpy(headings) {
+      const tocLinks = document.querySelectorAll(".toc-link");
+      
+      const onScroll = () => {
+        let activeHeadingId = "";
+        const scrollPosition = window.scrollY + 120; // sticky header padding offset
+
+        headings.forEach(heading => {
+          if (scrollPosition >= heading.offsetTop) {
+            activeHeadingId = heading.id;
+          }
+        });
+
+        if (activeHeadingId) {
+          tocLinks.forEach(link => {
+            const linkTarget = link.getAttribute("href").substring(1);
+            if (linkTarget === activeHeadingId) {
+              link.classList.add("active");
+            } else {
+              link.classList.remove("active");
+            }
+          });
+        }
+      };
+
+      window.removeEventListener("scroll", window.activeScrollSpyListener);
+      window.activeScrollSpyListener = onScroll;
+      window.addEventListener("scroll", onScroll);
+      onScroll();
+    }
+
+    // Mobile Sidebar Drawer Toggle
+    const menuToggleBtn = document.getElementById("menuToggleBtn");
+    const sidebarLeft = document.getElementById("sidebarLeft");
+    
+    menuToggleBtn.addEventListener("click", () => {
+      sidebarLeft.classList.toggle("active");
+    });
+
+    function closeSidebarMobile() {
+      if (window.innerWidth <= 900) {
+        sidebarLeft.classList.remove("active");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Clipboard Copy Utility
+    // -------------------------------------------------------------
+    function copyText(button) {
+      let codeNode;
+      const terminalBody = button.closest(".terminal-block")?.querySelector(".terminal-body pre code");
+      const cheatCmdCode = button.closest(".cheat-cmd-box")?.querySelector(".cheat-cmd-code");
+      
+      if (terminalBody) {
+        codeNode = terminalBody;
+      } else if (cheatCmdCode) {
+        codeNode = cheatCmdCode;
+      }
+
+      if (!codeNode) return;
+
+      // Strip terminal $ prompts if present
+      const textToCopy = codeNode.innerText.replace(/^\$\s*/, "");
+      
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalText = button.innerHTML;
+        button.innerText = "Copied!";
+        button.classList.add("copied");
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.classList.remove("copied");
+        }, 1500);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // Cheat Sheet Populate & Filter Logic
+    // -------------------------------------------------------------
+    function renderCheatSheet() {
+      const cheatGrid = document.getElementById("cheatGrid");
+      cheatGrid.innerHTML = "";
+
+      const filtered = filterCheatSheetData();
+      
+      if (filtered.length === 0) {
+        cheatGrid.innerHTML = `<div class="search-empty-state" style="grid-column: 1/-1;">No matching commands found.</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "cheat-card";
+        
+        card.innerHTML = `
+          <div class="cheat-card-header">
+            <span class="cheat-badge">${item.category}</span>
+          </div>
+          <div class="cheat-cmd-box">
+            <span class="cheat-cmd-code">${item.cmd}</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <p class="cheat-card-desc">${item.desc}</p>
+        `;
+        cheatGrid.appendChild(card);
+      });
+    }
+
+    function filterCheatSheetData() {
+      const searchVal = document.getElementById("cheatSearchInput").value.toLowerCase().trim();
+      
+      return CHEAT_SHEET_COMMANDS.filter(item => {
+        const matchesCategory = activeCheatFilter === "all" || item.category === activeCheatFilter;
+        const matchesKeyword = item.cmd.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal);
+        return matchesCategory && matchesKeyword;
+      });
+    }
+
+    function setCheatFilter(category) {
+      activeCheatFilter = category;
+      
+      const filterBtns = document.querySelectorAll(".cheat-filter-btn");
+      filterBtns.forEach(btn => {
+        if (btn.getAttribute("data-category") === category) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      renderCheatSheet();
+    }
+
+    function filterCheatSheet() {
+      renderCheatSheet();
+    }
+
+    // -------------------------------------------------------------
+    // Fuzzy Search Modal System
+    // -------------------------------------------------------------
+    function buildSearchIndex() {
+      PAGES.forEach(page => {
+        const section = document.getElementById(page.id);
+        if (!section) return;
+
+        // Page title indexing
+        searchIndex.push({
+          pageId: page.id,
+          elementId: page.id,
+          title: page.title,
+          text: page.title,
+          type: "Module Name"
+        });
+
+        // Headers indexing
+        const headers = section.querySelectorAll("h2, h3");
+        headers.forEach(h => {
+          searchIndex.push({
+            pageId: page.id,
+            elementId: h.id,
+            title: h.innerText,
+            text: h.innerText,
+            type: h.tagName
+          });
+        });
+
+        // Paragraphs indexing
+        const paragraphs = section.querySelectorAll(".doc-p");
+        paragraphs.forEach((p, idx) => {
+          if (!p.id) p.id = `${page.id}-p-${idx}`;
+          
+          searchIndex.push({
+            pageId: page.id,
+            elementId: p.id,
+            title: page.title,
+            text: p.innerText,
+            type: "Content"
+          });
+        });
+      });
+    }
+
+    function openSearchModal() {
+      document.getElementById("searchModal").classList.add("active");
+      const input = document.getElementById("searchBoxInput");
+      input.value = "";
+      input.focus();
+      handleSearch("");
+    }
+
+    function closeSearchModal() {
+      document.getElementById("searchModal").classList.remove("active");
+    }
+
+    function closeSearchModalOnBg(e) {
+      if (e.target.id === "searchModal") {
+        closeSearchModal();
+      }
+    }
+
+    function handleSearch(query) {
+      const resultsContainer = document.getElementById("searchResults");
+      resultsContainer.innerHTML = "";
+
+      const cleanQuery = query.toLowerCase().trim();
+      if (!cleanQuery) {
+        resultsContainer.innerHTML = `<div class="search-empty-state">Type keywords to query index database...</div>`;
+        return;
+      }
+
+      // Filter matches
+      const matches = searchIndex.filter(item => item.text.toLowerCase().includes(cleanQuery)).slice(0, 10);
+      
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = `<div class="search-empty-state">No matches found for "${query}"</div>`;
+        return;
+      }
+
+      matches.forEach(match => {
+        const item = document.createElement("div");
+        item.className = "search-result-item";
+        
+        let textToShow = match.text;
+        if (textToShow.length > 80) {
+          const idx = textToShow.toLowerCase().indexOf(cleanQuery);
+          const start = Math.max(0, idx - 20);
+          textToShow = (start > 0 ? "..." : "") + textToShow.substring(start, start + 80) + "...";
+        }
+
+        item.innerHTML = `
+          <div class="search-result-title">
+            <span>${match.title}</span>
+            <span class="badge">${match.type}</span>
+          </div>
+          <div class="search-result-excerpt">${textToShow}</div>
+        `;
+        
+        item.addEventListener("click", () => {
+          closeSearchModal();
+          window.location.hash = `#${match.elementId}`;
+        });
+
+        resultsContainer.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
